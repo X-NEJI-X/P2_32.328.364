@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Pago</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .payment-form {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+        }
+        
+        .payment-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #1a237e;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #1a237e;
+        }
+        
+        .expiry-date {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .expiry-date select {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .checkbox-group input {
+            margin-right: 10px;
+        }
+        
+        .price-details {
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            margin-top: 20px;
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .price-row.total {
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .pay-button {
+            background-color: #1a237e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .pay-button:hover {
+            background-color: #303f9f;
+        }
+        
+        .asterisk {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-form">
+        <div class="payment-header">VISA</div>
+        
+        <div class="form-group">
+            <label for="card-number">Card number <span class="asterisk">*</span></label>
+            <input type="text" id="card-number" placeholder="Enter your card number">
+        </div>
+        
+        <div class="form-group">
+            <label for="daily-date">Daily date <span class="asterisk">*</span></label>
+            <input type="text" id="daily-date" placeholder="DD/MM/YYYY">
+        </div>
+        
+        <div class="form-group">
+            <label>Expiry date</label>
+            <div class="expiry-date">
+                <select>
+                    <option>Month</option>
+                    <option>JAN</option>
+                    <option>FEB</option>
+                    <option>MAR</option>
+                    <option>APR</option>
+                    <option>MAY</option>
+                    <option>JUN</option>
+                    <option>JUL</option>
+                    <option>AUG</option>
+                    <option>SEP</option>
+                    <option selected>OCT</option>
+                    <option>NOV</option>
+                    <option>DEC</option>
+                </select>
+                
+                <select>
+                    <option>Year</option>
+                    <option>2023</option>
+                    <option>2024</option>
+                    <option>2025</option>
+                    <option>2026</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="save-details">
+            <label for="save-details">Show my details for future purchases</label>
+        </div>
+        
+        <div class="price-details">
+            <div class="price-row">
+                <span>$0.000</span>
+                <span>$10.00</span>
+            </div>
+            
+            <div class="price-row">
+                <span>Home delivery cost</span>
+                <span>$5.5</span>
+            </div>
+            
+            <div class="price-row total">
+                <span>TOTAL AMOUNT</span>
+                <span>$60.00</span>
+            </div>
+        </div>
+        
+        <button class="pay-button">CONTINUE PAYMENT</button>
+    </div>
+</body>
+</html>
