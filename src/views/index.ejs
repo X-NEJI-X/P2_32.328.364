@@ -3,10 +3,14 @@
   <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta property="og:title" content="<%=title%>">
+      <meta property="og:description" content="<%=description%>">
+      <meta property="og:image" content="<%=imageUrl%>">
+      <meta property="og:url" content="<%=pageUrl%>">
       <link rel="stylesheet" href="css/estilos.css">
-      <title>Pagina web</title>
       <script src="https://www.google.com/recaptcha/api.js" async defer></script>
       <!-- Google tag (gtag.js) -->
+      <script src="https://cdn.tailwindcss.com"></script>
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LDM2VCZHJ"></script>
       <script>
           window.dataLayer = window.dataLayer || [];
@@ -17,26 +21,69 @@
       </script>
   </head>
   <body>
-      <header class="header">
-        <div class="container">
-            <div class="logo">
-                <h1>Event<span>Space</span></h1>
-                <p>Espacios que inspiran</p>
-            </div>
-            <button class="menu-toggle" aria-label="Abrir menú">
-                <i class="fas fa-bars"></i>
-            </button>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#home">Inicio</a></li>
-                    <li><a href="#services">Servicios</a></li>
-                    <li><a href="#spaces">Espacios</a></li>
-                    <li><a href="/getPayment">Pagos</a></li>
-                    <li><a href="/admin/contacts">Contacto</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+      <header class="bg-white shadow-md sticky top-0 z-50">
+  <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+    <!-- Logo -->
+    <div class="flex items-center">
+      <h1 class="text-2xl font-bold text-blue-600">
+        Event<span class="text-blue-800">Space</span>
+      </h1>
+      <p class="ml-2 text-sm text-blue-400 hidden sm:block">Espacios que inspiran</p>
+    </div>
+
+    <!-- Menú para móvil -->
+    <button 
+      class="md:hidden text-blue-600 focus:outline-none"
+      aria-label="Abrir menú"
+      onclick="document.querySelector('.main-nav').classList.toggle('hidden')"
+    >
+      <i class="fas fa-bars text-2xl"></i>
+    </button>
+
+    <!-- Navegación principal -->
+    <nav class="main-nav hidden md:block">
+      <ul class="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-6">
+        <li>
+          <a href="#home" class="text-blue-600 hover:text-blue-800 font-medium transition-colors px-2 py-1 rounded hover:bg-blue-50">
+            Inicio
+          </a>
+        </li>
+        <li>
+          <a href="#services" class="text-blue-600 hover:text-blue-800 font-medium transition-colors px-2 py-1 rounded hover:bg-blue-50">
+            Servicios
+          </a>
+        </li>
+        <li>
+          <a href="#spaces" class="text-blue-600 hover:text-blue-800 font-medium transition-colors px-2 py-1 rounded hover:bg-blue-50">
+            Espacios
+          </a>
+        </li>
+        <li>
+          <a href="/getPayment" class="text-blue-600 hover:text-blue-800 font-medium transition-colors px-2 py-1 rounded hover:bg-blue-50">
+            Pagos
+          </a>
+        </li>
+        <li>
+          <a href="/admin/contacts" class="text-blue-600 hover:text-blue-800 font-medium transition-colors px-2 py-1 rounded hover:bg-blue-50">
+            Contacto
+          </a>
+        </li>
+        <li>
+          <a href="/login" class="bg-blue-100 text-blue-700 hover:bg-blue-200 font-medium transition-colors px-3 py-2 rounded-md">
+            Login
+          </a>
+        </li>
+        <% if(isAdmin){ %>
+        <li>
+          <a href="/logout" class="bg-red-100 text-red-600 hover:bg-red-200 font-medium transition-colors px-3 py-2 rounded-md">
+            Logout
+          </a>
+        </li>
+        <% } %>
+      </ul>
+    </nav>
+  </div>
+</header>
 
     <main>
         <!-- Sección Home -->
@@ -285,6 +332,16 @@
 </footer>
 <script src="/js/fetch.js"></script>
 <script src="js/main.js"></script>
+<script>
+  // Cerrar menú al hacer clic en un enlace (para móviles)
+  document.querySelectorAll('.main-nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth < 768) {
+        document.querySelector('.main-nav').classList.add('hidden');
+      }
+    });
+  });
+</script>
 </body>
 </html> 
 

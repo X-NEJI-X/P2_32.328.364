@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autenticación</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/alertConfig.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              100: '#e6f0ff',
+              200: '#b3d1ff',
+              300: '#80b3ff',
+              400: '#4d94ff',
+              500: '#1a75ff',
+              600: '#0066e6',
+              700: '#0052b3',
+              800: '#003d80',
+              900: '#00294d',
+            },
+            secondary: {
+              500: '#00b4d8',
+              600: '#0096c7'
+            }
+          },
+          boxShadow: {
+            'neumorphic': '8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff',
+            'neumorphic-inset': 'inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+    .card-rotate {
+      perspective: 1000px;
+    }
+    .card-inner {
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .card-rotate:hover .card-inner {
+      transform: rotateY(10deg);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen flex items-center justify-center px-4 py-8">
+  <div class="w-full max-w-md">
+    <!-- Logo flotante -->
+    <div class="flex justify-center mb-6 animate-float">
+      <div class="bg-white p-4 rounded-full shadow-xl">
+        <i class="fas fa-user-shield text-4xl text-primary-600"></i>
+      </div>
+    </div>
+    
+    <!-- Tarjeta de autenticación -->
+    <div class="card-rotate">
+      <div class="card-inner bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+        <!-- Pestañas de navegación -->
+        <div class="flex">
+          <button 
+            onclick="switchForm('login')" 
+            class="flex-1 py-4 text-center font-medium transition duration-300 
+            <%= formType === 'login' ? 'bg-primary-600 text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100' %>">
+            <i class="fas fa-sign-in-alt mr-2"></i> Iniciar Sesión
+          </button>
+          <button 
+            onclick="switchForm('register')" 
+            class="flex-1 py-4 text-center font-medium transition duration-300 
+            <%= formType === 'register' ? 'bg-primary-600 text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100' %>">
+            <i class="fas fa-user-plus mr-2"></i> Registrarse
+          </button>
+        </div>
+
+        <!-- Contenido del formulario -->
+        <div class="p-6 sm:p-8">
+          <% if (formType === 'login'){ %>
+            <form id="formLogin" class="space-y-5">
+              <h2 class="text-2xl font-bold text-primary-800 text-center mb-6">
+                Bienvenido de vuelta
+              </h2>
+
+              <div class="space-y-2">
+                <div class="flex items-center text-gray-500">
+                  <i class="fas fa-envelope mr-2 text-primary-500"></i>
+                  <label for="login-email" class="block text-sm font-medium">
+                    Correo Electrónico
+                  </label>
+                </div>
+                <input type="email" id="login-email" name="email" required placeholder="tucorreo@ejemplo.com"
+                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-300 transition bg-gray-50">
+              </div>
+
+              <div class="space-y-2">
+                <div class="flex items-center text-gray-500">
+                  <i class="fas fa-lock mr-2 text-primary-500"></i>
+                  <label for="login-password" class="block text-sm font-medium">
+                    Contraseña
+                  </label>
+                </div>
+                <input type="password" id="login-password" name="password" required placeholder="••••••••"
+                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-300 transition bg-gray-50">
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                  <label for="remember-me" class="ml-2 block text-sm text-gray-600">
+                    Recordarme
+                  </label>
+                </div>
+                <a href="#" class="text-sm text-primary-600 hover:text-primary-500">
+                  ¿Olvidaste tu contraseña?
+                </a>
+              </div>
+
+              <div class="pt-2 space-y-4">
+                <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-primary-500 text-white py-3 rounded-lg hover:from-primary-700 hover:to-primary-600 transition-all shadow-md font-medium">
+                  <i class="fas fa-sign-in-alt mr-2"></i> Ingresar
+                </button>
+                
+                <div class="relative">
+                  <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                  </div>
+                  <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-500">
+                      O continúa con
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                  <a href="/auth/google" class="flex items-center justify-center gap-2 w-full bg-white text-gray-700 py-2.5 rounded-lg hover:bg-gray-50 transition border border-gray-200 shadow-sm">
+                    <i class="fab fa-google text-red-500"></i> 
+                    <span class="text-sm">Google</span>
+                  </a>
+                  <a href="#" class="flex items-center justify-center gap-2 w-full bg-white text-gray-700 py-2.5 rounded-lg hover:bg-gray-50 transition border border-gray-200 shadow-sm">
+                    <i class="fab fa-facebook-f text-blue-600"></i>
+                    <span class="text-sm">Facebook</span>
+                  </a>
+                </div>
+              </div>
+            </form>
+
+          <% } else { %>
+            <form id="formRegister" class="space-y-5">
+              <h2 class="text-2xl font-bold text-primary-800 text-center mb-6">
+                Crea tu cuenta
+              </h2>
+
+              <div class="space-y-2">
+                <div class="flex items-center text-gray-500">
+                  <i class="fas fa-user mr-2 text-primary-500"></i>
+                  <label for="username" class="block text-sm font-medium">
+                    Nombre Completo
+                  </label>
+                </div>
+                <input type="text" id="username" name="username" required placeholder="Juan Pérez"
+                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-300 transition bg-gray-50">
+              </div>
+
+              <div class="space-y-2">
+                <div class="flex items-center text-gray-500">
+                  <i class="fas fa-envelope mr-2 text-primary-500"></i>
+                  <label for="register-email" class="block text-sm font-medium">
+                    Correo Electrónico
+                  </label>
+                </div>
+                <input type="email" id="register-email" name="email" required placeholder="tucorreo@ejemplo.com"
+                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-300 transition bg-gray-50">
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <div class="flex items-center text-gray-500">
+                    <i class="fas fa-lock mr-2 text-primary-500"></i>
+                    <label for="register-password" class="block text-sm font-medium">
+                      Contraseña
+                    </label>
+                  </div>
+                  <input type="password" id="register-password" name="password_hash" required placeholder="••••••••" minlength="6"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-300 transition bg-gray-50">
+                </div>
+
+                <div class="space-y-2">
+                  <div class="flex items-center text-gray-500">
+                    <i class="fas fa-lock mr-2 text-primary-500"></i>
+                    <label for="register-confirm" class="block text-sm font-medium">
+                      Confirmar
+                    </label>
+                  </div>
+                  <input type="password" id="register-confirm" name="passwordHash" required placeholder="••••••••"
+                  class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-300 transition bg-gray-50">
+                </div>
+              </div>
+
+              <div class="flex items-center">
+                <input id="terms" name="terms" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                <label for="terms" class="ml-2 block text-sm text-gray-600">
+                  Acepto los <a href="#" class="text-primary-600 hover:text-primary-500">Términos y Condiciones</a>
+                </label>
+              </div>
+
+              <div class="pt-2">
+                <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-primary-500 text-white py-3 rounded-lg hover:from-primary-700 hover:to-primary-600 transition-all shadow-md font-medium">
+                  <i class="fas fa-user-plus mr-2"></i> Registrarse
+                </button>
+              </div>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchForm(type) {
+      window.location.href = `/login?form=${type}`;
+    }
+  </script>
+
+  <script>
+    let data, formData;
+    const formRegister = document.querySelector('#formRegister');
+    if (formRegister) {
+      formRegister.addEventListener('submit', e => {
+        e.preventDefault();
+        formData = new FormData(e.target);
+        data = Object.fromEntries(formData.entries());
+        
+        // Validar que las contraseñas coincidan
+        if (data.password_hash !== data.passwordHash) {
+          Swal.fire({
+            title: 'Error',
+            text: 'Las contraseñas no coinciden',
+            icon: 'error',
+            confirmButtonColor: '#1a75ff'
+          });
+          return;
+        }
+        
+        fetch('/registerUser', {
+          method: 'POST',
+          headers: {
+            "Content-type": "application/json"
+          },
+          body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(res => {
+          Swal.fire({
+            title: res.message,
+            icon: res.status ? 'success' : 'error',
+            confirmButtonColor: '#1a75ff'
+          }).then(() => {
+            if (res.status) {
+              window.location.href = '/login?form=login';
+            }
+          });
+        });
+      });
+    }
+  </script>
+
+  <script>
+    const formLogin = document.querySelector('#formLogin');
+    if (formLogin) {
+      formLogin.addEventListener('submit', e => {
+        e.preventDefault();
+        formData = new FormData(e.target);
+        data = Object.fromEntries(formData.entries());
+        fetch('/loginPost', {
+          method: 'POST',
+          headers: {
+            "Content-type": "application/json"
+          },
+          body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.status){
+            Swal.fire({
+              title: '¡Bienvenido!',
+              text: res.message,
+              icon: 'success',
+              confirmButtonColor: '#1a75ff'
+            }).then(() => {
+              window.location.href = '/admin/contacts';
+            });
+          } else {
+            Swal.fire({
+              title: 'Error',
+              text: res.message,
+              icon: 'error',
+              confirmButtonColor: '#1a75ff'
+            });
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>
