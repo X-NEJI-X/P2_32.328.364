@@ -121,10 +121,31 @@ function isAdmin() {
 // Redirect if not logged in
 function requireAuth() {
     if (!isLoggedIn()) {
+        try {
+            sessionStorage.setItem('flash_message', 'Debes iniciar sesión o registrarte para empezar a reservar espacios.');
+            sessionStorage.setItem('flash_type', 'warning');
+        } catch (e) {
+            // ignore
+        }
         window.location.href = '/login';
         return false;
     }
     return true;
+}
+
+function consumeFlashMessage() {
+    try {
+        const message = sessionStorage.getItem('flash_message');
+        const type = sessionStorage.getItem('flash_type') || 'warning';
+        if (message) {
+            sessionStorage.removeItem('flash_message');
+            sessionStorage.removeItem('flash_type');
+            return { message, type };
+        }
+    } catch (e) {
+        // ignore
+    }
+    return null;
 }
 
 // Initialize auth on page load

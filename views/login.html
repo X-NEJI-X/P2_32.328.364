@@ -109,62 +109,17 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            const flash = (typeof consumeFlashMessage === 'function') ? consumeFlashMessage() : null;
+            const alert = document.getElementById('alert');
+            if (flash && alert) {
+                alert.className = 'alert alert-warning mt-3';
+                alert.textContent = flash.message;
+                alert.style.display = 'block';
+            }
+
             const quickWrap = document.getElementById('quickAdminWrap');
             if (quickWrap && localStorage.getItem('auth_token')) {
                 quickWrap.style.display = 'none';
-            }
-        });
-
-        // Handle login form
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const btnText = document.getElementById('loginBtnText');
-            const spinner = document.getElementById('loginSpinner');
-            const alert = document.getElementById('alert');
-            
-            // Show loading
-            if (btnText) btnText.textContent = 'Iniciando sesión...';
-            if (spinner) spinner.style.display = 'inline-block';
-            if (alert) alert.style.display = 'none';
-            
-            try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Store token (mock implementation)
-                    localStorage.setItem('auth_token', data.token);
-                    localStorage.setItem('user_data', JSON.stringify(data.user));
-                    
-                    // Redirect to home
-                    window.location.href = '/';
-                } else {
-                    // Show error
-                    if (alert) {
-                        alert.textContent = data.error || 'Error en el login';
-                        alert.style.display = 'block';
-                    }
-                    if (btnText) btnText.textContent = 'Iniciar Sesión';
-                    if (spinner) spinner.style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                if (alert) {
-                    alert.textContent = 'Error de conexión';
-                    alert.style.display = 'block';
-                }
-                if (btnText) btnText.textContent = 'Iniciar Sesión';
-                if (spinner) spinner.style.display = 'none';
             }
         });
     </script>
