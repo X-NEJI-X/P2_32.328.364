@@ -41,6 +41,7 @@ app.get("/cart", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/cart.h
 app.get("/orders", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/orders.html")));
 app.get("/login", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/login.html")));
 app.get("/register", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/register.html")));
+app.get("/profile", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/profile.ejs")));
 app.get("/vistas", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/index.html")));
 
 // API Routes
