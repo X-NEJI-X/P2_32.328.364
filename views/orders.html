@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Compras - EventSpace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">EventSpace</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart">Carrito</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/orders">Mis Compras</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">Registro</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Orders Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">Mis Compras</h1>
+                <a href="/" class="btn btn-outline-primary">
+                    <i class="bi bi-house"></i> Volver al Inicio
+                </a>
+            </div>
+
+            <!-- Loading -->
+            <div id="loading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+
+            <!-- Orders List -->
+            <div id="ordersList" style="display: none;">
+                <!-- Orders will be loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyOrders" class="text-center py-5" style="display: none;">
+                <i class="bi bi-bag display-1 text-muted"></i>
+                <h3 class="mt-3">No tienes compras aún</h3>
+                <p class="text-muted">Comienza a comprar para ver tu historial aquí.</p>
+                <a href="/products" class="btn btn-primary">
+                    <i class="bi bi-cart"></i> Ver Productos
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css"></script>
+    <script>
+        // Load orders
+        async function loadOrders() {
+            try {
+                const response = await fetch('/api/orders');
+                const data = await response.json();
+                displayOrders(data.orders);
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                showError('Error al cargar las órdenes');
+            }
+        }
+
+        // Display orders
+        function displayOrders(orders) {
+            const loading = document.getElementById('loading');
+            const ordersList = document.getElementById('ordersList');
+            const emptyOrders = document.getElementById('emptyOrders');
+
+            if (loading) loading.style.display = 'none';
+
+            if (orders.length === 0) {
+                if (ordersList) ordersList.style.display = 'none';
+                if (emptyOrders) emptyOrders.style.display = 'block';
+                return;
+            }
+
+            if (ordersList) {
+                ordersList.style.display = 'block';
+                ordersList.innerHTML = orders.map(order => `
+                    <div class="card order-card mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <h6 class="mb-1">Orden #${order.id}</h6>
+                                            <small class="text-muted">Fecha: ${new Date(order.created_at).toLocaleDateString()}</small>
+                                        </div>
+                                        <span class="order-status pagado">Pagado</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Total:</strong> $${order.total ? order.total.toFixed(2) : '0.00'}
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="viewOrderDetails(${order.id})">
+                                        <i class="bi bi-eye"></i> Ver Detalles
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if (emptyOrders) emptyOrders.style.display = 'none';
+        }
+
+        // View order details
+        function viewOrderDetails(orderId) {
+            showSuccess('Mostrando detalles de la orden...');
+        }
+
+        // Show error message
+        function showError(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+        });
+    </script>
+</body>
+</html>

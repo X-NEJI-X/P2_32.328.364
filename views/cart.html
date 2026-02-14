@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - EventSpace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">EventSpace</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/cart">Carrito</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/orders">Mis Compras</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">Registro</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Section -->
+    <section class="py-5">
+        <div class="container">
+            <h1 class="mb-4">Mi Carrito</h1>
+
+            <!-- Loading -->
+            <div id="loading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+
+            <!-- Cart Content -->
+            <div id="cartContent" style="display: none;">
+                <div class="row">
+                    <!-- Cart Items -->
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Productos en el Carrito</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="cartItems">
+                                    <!-- Cart items will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cart Summary -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Resumen del Pedido</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Subtotal:</span>
+                                    <span id="subtotal">$0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span><strong>Total:</strong></span>
+                                    <span id="total" class="fw-bold text-primary">$0.00</span>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success btn-lg" onclick="proceedToPayment()">
+                                        <i class="bi bi-credit-card"></i> Proceder al Pago
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="clearCart()">
+                                        <i class="bi bi-trash"></i> Vaciar Carrito
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty Cart -->
+            <div id="emptyCart" class="text-center py-5" style="display: none;">
+                <i class="bi bi-cart-x display-1 text-muted"></i>
+                <h3 class="mt-3">Tu carrito está vacío</h3>
+                <p class="text-muted">Agrega productos para comenzar a comprar.</p>
+                <a href="/products" class="btn btn-primary">
+                    <i class="bi bi-arrow-left"></i> Ver Productos
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css"></script>
+    <script>
+        // Load cart
+        async function loadCart() {
+            try {
+                const response = await fetch('/api/cart');
+                const data = await response.json();
+                displayCart(data.items, data.total);
+            } catch (error) {
+                console.error('Error loading cart:', error);
+                showError('Error al cargar el carrito');
+            }
+        }
+
+        // Display cart
+        function displayCart(items, total) {
+            const loading = document.getElementById('loading');
+            const cartContent = document.getElementById('cartContent');
+            const emptyCart = document.getElementById('emptyCart');
+            const cartItems = document.getElementById('cartItems');
+            const totalElement = document.getElementById('total');
+            const subtotalElement = document.getElementById('subtotal');
+
+            if (loading) loading.style.display = 'none';
+
+            if (items.length === 0) {
+                if (cartContent) cartContent.style.display = 'none';
+                if (emptyCart) emptyCart.style.display = 'block';
+                return;
+            }
+
+            if (cartContent) cartContent.style.display = 'block';
+            if (emptyCart) emptyCart.style.display = 'none';
+
+            if (cartItems) {
+                cartItems.innerHTML = '<p class="text-center text-muted">El carrito está vacío</p>';
+            }
+
+            if (totalElement) totalElement.textContent = `$${total.toFixed(2)}`;
+            if (subtotalElement) subtotalElement.textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Proceed to payment
+        function proceedToPayment() {
+            showSuccess('Redirigiendo al proceso de pago...');
+            // Mock implementation
+            setTimeout(() => {
+                window.location.href = '/orders';
+            }, 2000);
+        }
+
+        // Clear cart
+        function clearCart() {
+            if (confirm('¿Estás seguro de vaciar todo el carrito?')) {
+                showSuccess('Carrito vaciado');
+                loadCart();
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCart();
+        });
+    </script>
+</body>
+</html>

@@ -4,42 +4,14 @@ services:
     name: eventspace-app
     env: node
     plan: free
-    buildCommand: "npm run build"
+    buildCommand: "npm install"
     startCommand: "npm start"
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3000
+        value: 10000
       - key: JWT_SECRET
         value: mibombo_universidad_render_free
       - key: FRONTEND_URL
         value: https://eventspace-app.onrender.com
-      - key: EMAIL_PASSWORD
-        sync: false
-      - key: EMAIL_USER
-        sync: false
-      - key: GOOGLE_CLIENT_ID
-        sync: false
-      - key: GOOGLE_CLIENT_SECRET
-        sync: false
-      - key: KEYAPIFAKE
-        sync: false
-      - key: KEYIPAPI
-        sync: false
-      - key: SECRET_KEYY
-        sync: false
-      - key: SESSION_SECRET
-        value: una_clave_segura_para_sesiones_render
-      - key: SITIO_KEY
-        sync: false
-      - key: STRIPE_PUBLISHABLE_KEY
-        sync: false
-      - key: STRIPE_SECRET_KEY
-        sync: false
-
-  # PostgreSQL Database
-  - type: pserv
-    name: eventspace-db
-    plan: free
-    ipAllowList: [] # Permitir solo conexiones desde el web service
