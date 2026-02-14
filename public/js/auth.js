@@ -5,10 +5,31 @@ const API_BASE = '/api';
 // Token storage
 const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'user_data';
+const THEME_KEY = 'theme_mode';
 
 // Check if user is logged in
 function isLoggedIn() {
     return localStorage.getItem(TOKEN_KEY) !== null;
+}
+
+function getThemeMode() {
+    return localStorage.getItem(THEME_KEY) || 'light';
+}
+
+function applyTheme(mode) {
+    const m = mode === 'dark' ? 'dark' : 'light';
+    document.body.classList.toggle('dark-mode', m === 'dark');
+    localStorage.setItem(THEME_KEY, m);
+
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.textContent = m === 'dark' ? 'Modo claro' : 'Modo oscuro';
+    }
+}
+
+function toggleTheme() {
+    const next = getThemeMode() === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
 }
 
 // Get current user
@@ -151,6 +172,18 @@ function consumeFlashMessage() {
 // Initialize auth on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateAuthUI();
+
+    // Apply theme as early as possible
+    applyTheme(getThemeMode());
+
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleTheme();
+        });
+    }
     
     // Handle login form
     const loginForm = document.getElementById('loginForm');
