@@ -4,9 +4,9 @@
 
 require('dotenv').config();
 const { User, createTable: createUserTable } = require('../models/User');
-const { createTable: createProductTable } = require('../models/Product');
-const { createTable: createCartTable } = require('../models/Cart');
-const { createOrderTables } = require('../models/Order');
+const ProductModel = require('../models/Product');
+const CartModelSetup = require('../models/Cart');
+const OrderModelSetup = require('../models/Order');
 
 const setupDatabase = async () => {
   try {
@@ -18,15 +18,15 @@ const setupDatabase = async () => {
     console.log('✅ Tabla users creada');
     
     console.log('📝 Creando tabla products...');
-    await createProductTable();
+    await ProductModel.createTable();
     console.log('✅ Tabla products creada');
     
     console.log('📝 Creando tabla cart...');
-    await createCartTable();
+    await CartModelSetup.createTable();
     console.log('✅ Tabla cart creada');
     
     console.log('📝 Creando tablas orders y order_items...');
-    await createOrderTables();
+    await OrderModelSetup.createOrderTables();
     console.log('✅ Tablas orders y order_items creadas');
     
     console.log('🎉 Base de datos configurada exitosamente');

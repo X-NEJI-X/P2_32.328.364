@@ -23,7 +23,7 @@ const createCheckoutSession = async (req: any, res: any, next: any) => {
     }
     
     // Crear line_items para Stripe
-    const line_items = cartItems.map(item => ({
+    const line_items = cartItems.map((item: any) => ({
       price_data: {
         currency: 'usd',
         product_data: {
@@ -91,7 +91,7 @@ const confirmPayment = async (req: any, res: any, next: any) => {
     const order = await Order.createOrder(userId, total, payment_intent_id);
     
     // Crear items de la orden
-    const orderItems = cartItems.map(item => ({
+    const orderItems = cartItems.map((item: any) => ({
       product_id: item.product_id,
       cantidad: item.cantidad,
       precio_unitario: item.precio

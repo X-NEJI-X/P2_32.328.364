@@ -4,7 +4,7 @@
 
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
-const User = require('../models/User');
+const UserModel = require('../models/User');
 
 const register = async (req: any, res: any, next: any) => {
   try {
@@ -13,13 +13,13 @@ const register = async (req: any, res: any, next: any) => {
       return res.status(400).json({ error: 'Faltan campos obligatorios: nombre, email, password.' });
     }
 
-    const existing = await User.findByEmail(email);
+    const existing = await UserModel.findByEmail(email);
     if (existing) {
       return res.status(400).json({ error: 'El email ya está registrado.' });
     }
     
     const hash = await bcrypt.hash(password, 10);
-    const user = await User.create(nombre, email, hash, nivel || 'usuario');
+    const user = await UserModel.create(nombre, email, hash, nivel || 'usuario');
     const token = jsonwebtoken.sign(
       { userId: user.id, nivel: user.nivel },
       process.env.JWT_SECRET || 'fallback_secret',
@@ -57,7 +57,7 @@ const login = async (req: any, res: any, next: any) => {
   try {
     const { email, password } = req.body;
     
-    const user = await User.findByEmail(email);
+    const user = await UserModel.findByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Credenciales incorrectas.' });
     }
@@ -101,7 +101,7 @@ const login = async (req: any, res: any, next: any) => {
 
 const me = async (req: any, res: any, next: any) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await UserModel.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ error: 'Usuario no encontrado.' });
     }
