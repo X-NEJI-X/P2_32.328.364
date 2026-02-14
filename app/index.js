@@ -13,7 +13,15 @@ const APP_ROOT = __dirname;
 const app = express();
 app.set("port", process.env.PORT || 5000);
 
-app.use(express.static(path.join(APP_ROOT, "../public")));
+app.use(express.static(path.join(APP_ROOT, "../public"), {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.css') || filePath.endsWith('.js') || filePath.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+        }
+    }
+}));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -35,14 +43,21 @@ app.use((req, res, next) => {
 });
 
 // Rutas principales
-app.get("/", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/index.html")));
-app.get("/products", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/products.html")));
-app.get("/cart", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/cart.html")));
-app.get("/orders", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/orders.html")));
-app.get("/login", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/login.html")));
-app.get("/register", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/register.html")));
-app.get("/profile", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/profile.ejs")));
-app.get("/vistas", (req, res) => res.sendFile(path.join(APP_ROOT, "../views/index.html")));
+function sendNoCacheFile(res, filePath) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    return res.sendFile(filePath);
+}
+
+app.get("/", (req, res) => sendNoCacheFile(res, path.join(APP_ROOT, "../views/index.html")));
+app.get("/products", (req, res) => sendNoCacheFile(res, path.join(APP_ROOT, "../views/products.html")));
+app.get("/cart", (req, res) => sendNoCacheFile(res, path.join(APP_ROOT, "../views/cart.html")));
+app.get("/orders", (req, res) => sendNoCacheFile(res, path.join(APP_ROOT, "../views/orders.html")));
+app.get("/login", (req, res) => sendNoCacheFile(res, path.join(APP_ROOT, "../views/login.html")));
+app.get("/register", (req, res) => sendNoCacheFile(res, path.join(APP_ROOT, "../views/register.html")));
+app.get("/profile", (req, res) => sendNoCacheFile(res, path.join(APP_ROOT, "../views/profile.ejs")));
+app.get("/vistas", (req, res) => sendNoCacheFile(res, path.join(APP_ROOT, "../views/index.html")));
 
 // API Routes
 app.get("/api/health", (req, res) => {

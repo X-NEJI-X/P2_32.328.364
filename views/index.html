@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EventSpace - Plataforma Profesional de Eventos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/professional.css">
+    <link rel="stylesheet" href="/css/professional.css?v=20260214">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -334,6 +334,126 @@
         </div>
     </section>
 
+    <!-- Reviews Section -->
+    <section class="py-5 section-gradient-soft">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold">Reseñas</h2>
+                <p class="lead text-muted">Comparte tu experiencia y ayuda a otros a decidir</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Dejar una reseña</h5>
+                            <form id="reviewForm">
+                                <div class="mb-3">
+                                    <label for="reviewName" class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" id="reviewName" placeholder="Tu nombre" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="reviewRating" class="form-label">Calificación</label>
+                                    <select class="form-select" id="reviewRating" required>
+                                        <option value="" selected disabled>Selecciona</option>
+                                        <option value="5">5 - Excelente</option>
+                                        <option value="4">4 - Muy bueno</option>
+                                        <option value="3">3 - Bueno</option>
+                                        <option value="2">2 - Regular</option>
+                                        <option value="1">1 - Malo</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="reviewText" class="form-label">Comentario</label>
+                                    <textarea class="form-control" id="reviewText" rows="4" placeholder="Cuéntanos qué te gustó..." required></textarea>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Enviar reseña</button>
+                                </div>
+                            </form>
+                            <div id="reviewAlert" class="alert alert-success mt-3" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <h5 class="card-title mb-0">Lo que opina la gente</h5>
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="clearReviewsBtn">Limpiar reseñas</button>
+                            </div>
+                            <hr>
+                            <div id="reviewsList"></div>
+                            <div id="reviewsEmpty" class="text-muted" style="display:none;">Aún no hay reseñas. Sé el primero en dejar una.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-5 section-gradient-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold">Preguntas Frecuentes</h2>
+                <p class="lead text-muted">Resolvemos las dudas más comunes antes de reservar</p>
+            </div>
+
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faqOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseOne">
+                            ¿Cuál es la política de cancelación?
+                        </button>
+                    </h2>
+                    <div id="faqCollapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Puedes cancelar con 24 horas de antelación para reprogramar sin penalidad. Para fines de demo, el sistema simula el flujo de reserva.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faqTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseTwo">
+                            ¿Qué métodos de pago están disponibles?
+                        </button>
+                    </h2>
+                    <div id="faqCollapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Esta versión usa un pago simulado para la demostración. En un entorno real podrías integrar Stripe o PayPal.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faqThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseThree">
+                            ¿Puedo ver mis reservas y el detalle del ticket?
+                        </button>
+                    </h2>
+                    <div id="faqCollapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Sí. En <strong>Mis Reservas</strong> puedes ver el historial y el detalle, incluyendo el nombre y el correo del usuario que confirmó la reserva.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faqFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseFour">
+                            ¿Necesito cuenta para reservar?
+                        </button>
+                    </h2>
+                    <div id="faqCollapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Sí. Para mantener un flujo realista, necesitas iniciar sesión o registrarte antes de reservar.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- CTA Section -->
     <section class="py-5 text-center section-gradient-soft">
         <div class="container">
@@ -345,6 +465,22 @@
                 </a>
                 <a href="/products" class="btn btn-outline-primary btn-lg">
                     <i class="fas fa-eye me-2"></i>Ver Demo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Secondary Close -->
+    <section class="py-5 text-center section-gradient-light">
+        <div class="container">
+            <h2 class="fw-bold mb-3">Reserva tu espacio hoy</h2>
+            <p class="lead text-muted mb-4">Tu próxima experiencia comienza con un clic.</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="/products" class="btn btn-primary btn-lg">
+                    <i class="fas fa-calendar-check me-2"></i>Reservar ahora
+                </a>
+                <a href="/register" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Crear cuenta
                 </a>
             </div>
         </div>
@@ -389,7 +525,94 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/animations.js"></script>
+    <script src="/js/auth.js?v=20260214"></script>
+    <script src="/js/animations.js?v=20260214"></script>
+    <script>
+        function getStoredReviews() {
+            try {
+                return JSON.parse(localStorage.getItem('reviews')) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveStoredReviews(reviews) {
+            localStorage.setItem('reviews', JSON.stringify(reviews));
+        }
+
+        function renderStars(rating) {
+            const r = Math.max(1, Math.min(5, parseInt(rating)));
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                html += `<i class="fas fa-star${i <= r ? '' : '-o'}"></i>`;
+            }
+            return html.replace(/fa-star-o/g, 'fa-star text-secondary').replace(/fa-star/g, 'fa-star text-warning');
+        }
+
+        function renderReviews() {
+            const list = document.getElementById('reviewsList');
+            const empty = document.getElementById('reviewsEmpty');
+            if (!list || !empty) return;
+
+            const reviews = getStoredReviews();
+            if (reviews.length === 0) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            list.innerHTML = reviews.slice().reverse().map(r => `
+                <div class="border rounded-3 p-3 mb-3" style="background: rgba(255,255,255,0.7);">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                        <div>
+                            <strong>${r.name}</strong>
+                            <div class="small">${new Date(r.createdAt).toLocaleString()}</div>
+                        </div>
+                        <div>${renderStars(r.rating)}</div>
+                    </div>
+                    <p class="text-muted mb-0 mt-2">${r.text}</p>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderReviews();
+
+            const form = document.getElementById('reviewForm');
+            const alert = document.getElementById('reviewAlert');
+            const clearBtn = document.getElementById('clearReviewsBtn');
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    localStorage.removeItem('reviews');
+                    renderReviews();
+                });
+            }
+
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const name = document.getElementById('reviewName')?.value?.trim();
+                    const rating = document.getElementById('reviewRating')?.value;
+                    const text = document.getElementById('reviewText')?.value?.trim();
+                    if (!name || !rating || !text) return;
+
+                    const reviews = getStoredReviews();
+                    reviews.push({ name, rating: parseInt(rating), text, createdAt: Date.now() });
+                    saveStoredReviews(reviews);
+                    renderReviews();
+
+                    form.reset();
+                    if (alert) {
+                        alert.textContent = '¡Gracias! Tu reseña fue guardada.';
+                        alert.style.display = 'block';
+                        setTimeout(() => { alert.style.display = 'none'; }, 2500);
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
