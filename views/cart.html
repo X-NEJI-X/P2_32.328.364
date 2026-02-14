@@ -115,20 +115,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css"></script>
     <script>
-        // Load cart
-        async function loadCart() {
-            try {
-                const response = await fetch('/api/cart');
-                const data = await response.json();
-                displayCart(data.items, data.total);
-            } catch (error) {
-                console.error('Error loading cart:', error);
-                showError('Error al cargar el carrito');
-            }
+        // Carrito usando localStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Load cart from localStorage
+        function loadCart() {
+            displayCart(cart);
         }
 
         // Display cart
-        function displayCart(items, total) {
+        function displayCart(items) {
             const loading = document.getElementById('loading');
             const cartContent = document.getElementById('cartContent');
             const emptyCart = document.getElementById('emptyCart');
@@ -148,27 +144,143 @@
             if (emptyCart) emptyCart.style.display = 'none';
 
             if (cartItems) {
-                cartItems.innerHTML = '<p class="text-center text-muted">El carrito está vacío</p>';
+                cartItems.innerHTML = items.map(item => `
+                    <div class="cart-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <img src="https://picsum.photos/seed/${item.codigo}/80/80.jpg" alt="${item.nombre}" class="img-fluid rounded">
+                            </div>
+                            <div class="col-md-4">
+                                <h6 class="mb-1">${item.nombre}</h6>
+                                <small class="text-muted">Código: ${item.codigo}</small>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="input-group input-group-sm">
+                                    <button class="btn btn-outline-secondary" onclick="updateQuantity(${item.id}, ${item.cantidad - 1})">-</button>
+                                    <input type="number" class="form-control text-center" value="${item.cantidad}" min="1" onchange="updateQuantity(${item.id}, this.value)">
+                                    <button class="btn btn-outline-secondary" onclick="updateQuantity(${item.id}, ${item.cantidad + 1})">+</button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="fw-bold">$${item.precio.toFixed(2)}</span>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(${item.id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
             }
 
+            const total = items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            
             if (totalElement) totalElement.textContent = `$${total.toFixed(2)}`;
             if (subtotalElement) subtotalElement.textContent = `$${total.toFixed(2)}`;
         }
 
+        // Update quantity
+        async function updateQuantity(productId, newQuantity) {
+            if (newQuantity < 1) {
+                removeFromCart(productId);
+                return;
+            }
+
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.cantidad = parseInt(newQuantity);
+                saveCart();
+                loadCart();
+            }
+        }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCart();
+            loadCart();
+            showSuccess('Producto eliminado del carrito');
+        }
+
+        // Save cart to localStorage
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // Add product to cart
+        async function addToCart(productId) {
+            try {
+                const response = await fetch('/api/products');
+                const data = await response.json();
+                const product = data.products.find(p => p.id === productId);
+                
+                if (!product) {
+                    showError('Producto no encontrado');
+                    return;
+                }
+                
+                const existingItem = cart.find(item => item.id === productId);
+                if (existingItem) {
+                    existingItem.cantidad += 1;
+                } else {
+                    cart.push({
+                        id: product.id,
+                        nombre: product.nombre,
+                        codigo: product.codigo,
+                        precio: product.precio,
+                        cantidad: 1,
+                        descripcion: product.descripcion
+                    });
+                }
+                
+                saveCart();
+                loadCart();
+                showSuccess('Producto agregado al carrito');
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                showError('Error al agregar al carrito');
+            }
+        }
+
         // Proceed to payment
         function proceedToPayment() {
-            showSuccess('Redirigiendo al proceso de pago...');
-            // Mock implementation
-            setTimeout(() => {
-                window.location.href = '/orders';
-            }, 2000);
+            if (cart.length === 0) {
+                showError('El carrito está vacío');
+                return;
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            
+            // Simular checkout session
+            fetch('/api/payments/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    success_url: `${window.location.origin}/orders`,
+                    cancel_url: `${window.location.origin}/cart`
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Simular redirect a Stripe checkout
+                window.location.href = data.url;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Error al procesar el pago');
+            });
         }
 
         // Clear cart
         function clearCart() {
             if (confirm('¿Estás seguro de vaciar todo el carrito?')) {
-                showSuccess('Carrito vaciado');
+                cart = [];
+                saveCart();
                 loadCart();
+                showSuccess('Carrito vaciado');
             }
         }
 
