@@ -52,13 +52,18 @@ app.get("/api/health", (req, res) => {
     });
 });
 
-// Mock de productos para pruebas
+// Mock de espacios para pruebas
 let mockProducts = [
-    { id: 1, nombre: "Producto 1", codigo: "PROD001", precio: 29.99, descripcion: "Descripción del producto 1", stock: 10 },
-    { id: 2, nombre: "Producto 2", codigo: "PROD002", precio: 49.99, descripcion: "Descripción del producto 2", stock: 5 },
-    { id: 3, nombre: "Producto 3", codigo: "PROD003", precio: 19.99, descripcion: "Descripción del producto 3", stock: 15 },
-    { id: 4, nombre: "Producto 4", codigo: "PROD004", precio: 39.99, descripcion: "Descripción del producto 4", stock: 8 },
-    { id: 5, nombre: "Producto 5", codigo: "PROD005", precio: 59.99, descripcion: "Descripción del producto 5", stock: 12 }
+    { id: 1, nombre: "Salón Aurora", codigo: "SALON001", precio: 150.00, descripcion: "Salón elegante con capacidad para 150 personas. Ideal para bodas y eventos corporativos.", stock: 1 },
+    { id: 2, nombre: "Jardín Central", codigo: "JARDIN001", precio: 200.00, descripcion: "Jardín al aire libre con decoración natural. Perfecto para celebraciones al atardecer.", stock: 1 },
+    { id: 3, nombre: "Terraza Skyline", codigo: "TERRAZA001", precio: 180.00, descripcion: "Terraza con vista panorámica de la ciudad. Ambiente moderno para eventos exclusivos.", stock: 1 },
+    { id: 4, nombre: "Salón Cristal", codigo: "SALON002", precio: 120.00, descripcion: "Salón luminoso con paredes de cristal. Excelente para conferencias y reuniones.", stock: 1 },
+    { id: 5, nombre: "Casa de Campo", codigo: "CAMPO001", precio: 250.00, descripcion: "Espacio rústico con áreas verdes y zona de BBQ. Ideal para eventos familiares.", stock: 1 },
+    { id: 6, nombre: "Auditorio Premium", codigo: "AUD001", precio: 300.00, descripcion: "Auditorio equipado con sonido profesional y proyector. Para charlas, lanzamientos y presentaciones.", stock: 1 },
+    { id: 7, nombre: "Salón Marfil", codigo: "SALON003", precio: 140.00, descripcion: "Salón clásico con decoración neutra. Perfecto para eventos formales.", stock: 1 },
+    { id: 8, nombre: "Piscina & Lounge", codigo: "PISCINA001", precio: 220.00, descripcion: "Área de piscina con lounge y bar. Para fiestas privadas y celebraciones.", stock: 1 },
+    { id: 9, nombre: "Sala Ejecutiva", codigo: "EJEC001", precio: 90.00, descripcion: "Sala privada para reuniones ejecutivas. Incluye proyector y coffee break.", stock: 1 },
+    { id: 10, nombre: "Galería Urbana", codigo: "GALERIA001", precio: 160.00, descripcion: "Espacio tipo galería para exposiciones, cócteles y eventos culturales.", stock: 1 }
 ];
 
 // Mock de usuarios para pruebas
@@ -75,7 +80,7 @@ app.get("/api/products", (req, res) => {
 function isAdmin(req, res, next) {
     const token = req.headers.authorization;
     if (!token) {
-        return res.status(401).json({ error: 'Token no proporcionado' });
+        return res.status(401).json({ error: 'Debes iniciar sesión como admin para agregar espacios' });
     }
     
     // Extraer userId del token (mock)
@@ -83,7 +88,7 @@ function isAdmin(req, res, next) {
     const user = mockUsers.find(u => u.id === parseInt(userId));
     
     if (!user || user.nivel !== 'admin') {
-        return res.status(403).json({ error: 'Acceso denegado. Se requiere nivel de administrador.' });
+        return res.status(403).json({ error: 'Debes iniciar sesión como admin para agregar espacios' });
     }
     
     req.user = user;
@@ -105,7 +110,7 @@ app.post("/api/products", isAdmin, (req, res) => {
     
     // Verificar si el código ya existe
     if (mockProducts.find(p => p.codigo === codigo)) {
-        return res.status(400).json({ error: 'El código de producto ya existe' });
+        return res.status(400).json({ error: 'El código del espacio ya existe' });
     }
     
     // Crear nuevo producto
@@ -121,7 +126,7 @@ app.post("/api/products", isAdmin, (req, res) => {
     mockProducts.push(newProduct);
     
     res.status(201).json({
-        message: 'Producto creado exitosamente',
+        message: 'Espacio creado exitosamente',
         product: newProduct
     });
 });
@@ -204,10 +209,11 @@ app.get("/api/auth/me", (req, res) => {
 app.get("/api/products/:codigo", (req, res) => {
     const product = mockProducts.find(p => p.codigo === req.params.codigo);
     if (!product) {
-        return res.status(404).json({ error: 'Producto no encontrado' });
+        return res.status(404).json({ error: 'Espacio no encontrado' });
     }
     res.json({ product });
 });
+
 // Mock de autenticación
 app.post("/api/auth/login", (req, res) => {
     const { email, password } = req.body;
