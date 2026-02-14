@@ -51,7 +51,7 @@ function updateAuthUI() {
         if (loginItem) loginItem.style.display = 'none';
         if (registerItem) registerItem.style.display = 'none';
         if (userDropdown) {
-            userDropdown.style.display = 'block';
+            userDropdown.style.display = 'list-item';
             if (userName) userName.textContent = user.nombre;
         }
     } else {
@@ -183,6 +183,16 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             toggleTheme();
         });
+    }
+
+    // Ensure user dropdown works even if auto-init fails
+    try {
+        const dropdownToggle = document.getElementById('navbarDropdown');
+        if (dropdownToggle && window.bootstrap && typeof window.bootstrap.Dropdown === 'function') {
+            window.bootstrap.Dropdown.getOrCreateInstance(dropdownToggle);
+        }
+    } catch (e) {
+        // ignore
     }
     
     // Handle login form
