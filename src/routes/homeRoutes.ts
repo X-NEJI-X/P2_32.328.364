@@ -38,4 +38,9 @@ router.get('/profile', (req, res) => {
   res.render('profile');
 });
 
+// Página de vistas (compatibilidad con ruta antigua)
+router.get('/vistas', (req, res) => {
+  res.render('index');
+});
+
 export default router;

@@ -30,5 +30,9 @@ router.get('/register', (req, res) => {
 router.get('/profile', (req, res) => {
     res.render('profile');
 });
+// Página de vistas (compatibilidad con ruta antigua)
+router.get('/vistas', (req, res) => {
+    res.render('index');
+});
 exports.default = router;
 //# sourceMappingURL=homeRoutes.js.map
