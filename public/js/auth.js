@@ -32,6 +32,31 @@ function toggleTheme() {
     applyTheme(next);
 }
 
+function initUserDropdownFallback() {
+    const dropdownToggle = document.getElementById('navbarDropdown');
+    if (!dropdownToggle) return;
+
+    const menu = dropdownToggle.nextElementSibling;
+    if (!menu || !menu.classList.contains('dropdown-menu')) return;
+
+    dropdownToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // If Bootstrap already handles it, this will be redundant but harmless
+        const isShown = menu.classList.contains('show');
+        document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
+        if (!isShown) {
+            menu.classList.add('show');
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (dropdownToggle.contains(e.target)) return;
+        if (menu.contains(e.target)) return;
+        menu.classList.remove('show');
+    });
+}
+
 // Get current user
 function getCurrentUser() {
     const userStr = localStorage.getItem(USER_KEY);
@@ -194,6 +219,9 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (e) {
         // ignore
     }
+
+    // Fallback in case Bootstrap dropdown is not working
+    initUserDropdownFallback();
     
     // Handle login form
     const loginForm = document.getElementById('loginForm');
