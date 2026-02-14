@@ -54,6 +54,14 @@
     <!-- Products Section -->
     <section class="py-5">
         <div class="container">
+            <div id="adminPanel" class="alert alert-warning d-flex justify-content-between align-items-center flex-wrap gap-2" style="display:none;">
+                <div>
+                    <strong>Modo Admin</strong>
+                    <span class="ms-2">Puedes agregar nuevos espacios al catálogo.</span>
+                </div>
+                <button class="btn btn-primary" onclick="showAddProductModal()">Agregar Espacio</button>
+            </div>
+
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                 <h1 class="mb-0">Espacios Disponibles</h1>
                 <button id="addProductBtn" class="btn btn-primary" style="display: none;" onclick="showAddProductModal()">
@@ -116,7 +124,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="addProduct()">Agregar Producto</button>
+                    <button type="button" class="btn btn-primary" onclick="addProduct()">Agregar Espacio</button>
                 </div>
             </div>
         </div>
@@ -345,12 +353,17 @@
         document.addEventListener('DOMContentLoaded', async function() {
             // Load products
             loadProducts();
-
+            
             // Check if user is admin to show add product button
             const isAdmin = await checkAdminStatus();
             const addProductBtn = document.getElementById('addProductBtn');
             if (addProductBtn) {
                 addProductBtn.style.display = isAdmin ? 'block' : 'none';
+            }
+
+            const adminPanel = document.getElementById('adminPanel');
+            if (adminPanel) {
+                adminPanel.style.display = isAdmin ? 'flex' : 'none';
             }
         });
     </script>
