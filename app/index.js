@@ -63,7 +63,7 @@ app.get("/vistas", (req, res) => sendNoCacheFile(res, path.join(APP_ROOT, "../vi
 app.get("/api/health", (req, res) => {
     res.json({ 
         status: 'OK', 
-        message: 'Servidor funcionando correctamente',
+        message: 'API activa',
         timestamp: new Date().toISOString()
     });
 });
@@ -271,7 +271,7 @@ app.post("/api/auth/register", (req, res) => {
     mockUsers.push(newUser);
     
     res.json({
-        message: 'Usuario registrado correctamente',
+        message: 'API activa',
         user: { id: newUser.id, nombre: newUser.nombre, email: newUser.email, nivel: newUser.nivel },
         token: 'mock_token_' + newUser.id
     });
