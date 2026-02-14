@@ -63,14 +63,144 @@ let mockProducts = [
 
 // Mock de usuarios para pruebas
 let mockUsers = [
-    { id: 1, nombre: "Admin User", email: "admin@test.com", password: "$2b$10$92IXUNpkjO0rOQ5byMi.Y4Rk9jgPX1fIe3", nivel: "admin" },
-    { id: 2, nombre: "Test User", email: "user@test.com", password: "$2b$10$92IXUNpkjO0rOQ5byMi.Y4Rk9jgPX1fIe3", nivel: "usuario" }
+    { id: 1, nombre: "Admin User", email: "admin@test.com", password: "admin123", nivel: "admin" },
+    { id: 2, nombre: "Test User", email: "user@test.com", password: "user123", nivel: "usuario" }
 ];
 
 app.get("/api/products", (req, res) => {
     res.json({ products: mockProducts });
 });
 
+// Middleware para verificar si es admin
+function isAdmin(req, res, next) {
+    const token = req.headers.authorization;
+    if (!token) {
+        return res.status(401).json({ error: 'Token no proporcionado' });
+    }
+    
+    // Extraer userId del token (mock)
+    const userId = token.replace('mock_token_', '');
+    const user = mockUsers.find(u => u.id === parseInt(userId));
+    
+    if (!user || user.nivel !== 'admin') {
+        return res.status(403).json({ error: 'Acceso denegado. Se requiere nivel de administrador.' });
+    }
+    
+    req.user = user;
+    next();
+}
+
+// Crear producto (solo admin)
+app.post("/api/products", isAdmin, (req, res) => {
+    const { nombre, codigo, precio, descripcion, stock = 10 } = req.body;
+    
+    // Validaciones
+    if (!nombre || !codigo || !precio) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios: nombre, codigo, precio' });
+    }
+    
+    if (precio <= 0) {
+        return res.status(400).json({ error: 'El precio debe ser mayor a 0' });
+    }
+    
+    // Verificar si el código ya existe
+    if (mockProducts.find(p => p.codigo === codigo)) {
+        return res.status(400).json({ error: 'El código de producto ya existe' });
+    }
+    
+    // Crear nuevo producto
+    const newProduct = {
+        id: mockProducts.length + 1,
+        nombre,
+        codigo,
+        precio: parseFloat(precio),
+        descripcion: descripcion || '',
+        stock: parseInt(stock)
+    };
+    
+    mockProducts.push(newProduct);
+    
+    res.status(201).json({
+        message: 'Producto creado exitosamente',
+        product: newProduct
+    });
+});
+
+// Actualizar producto (solo admin)
+app.put("/api/products/:id", isAdmin, (req, res) => {
+    const { id } = req.params;
+    const { nombre, codigo, precio, descripcion, stock } = req.body;
+    
+    const productIndex = mockProducts.findIndex(p => p.id === parseInt(id));
+    if (productIndex === -1) {
+        return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+    
+    // Validaciones
+    if (precio <= 0) {
+        return res.status(400).json({ error: 'El precio debe ser mayor a 0' });
+    }
+    
+    // Actualizar producto
+    const updatedProduct = {
+        ...mockProducts[productIndex],
+        ...(nombre && { nombre }),
+        ...(codigo && { codigo }),
+        ...(precio && { precio: parseFloat(precio) }),
+        ...(descripcion !== undefined && { descripcion }),
+        ...(stock !== undefined && { stock: parseInt(stock) })
+    };
+    
+    mockProducts[productIndex] = updatedProduct;
+    
+    res.json({
+        message: 'Producto actualizado exitosamente',
+        product: updatedProduct
+    });
+});
+
+// Eliminar producto (solo admin)
+app.delete("/api/products/:id", isAdmin, (req, res) => {
+    const { id } = req.params;
+    
+    const productIndex = mockProducts.findIndex(p => p.id === parseInt(id));
+    if (productIndex === -1) {
+        return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+    
+    const deletedProduct = mockProducts.splice(productIndex, 1)[0];
+    
+    res.json({
+        message: 'Producto eliminado exitosamente',
+        product: deletedProduct
+    });
+});
+
+// Obtener usuario actual (para verificar si es admin)
+app.get("/api/auth/me", (req, res) => {
+    const token = req.headers.authorization;
+    if (!token) {
+        return res.status(401).json({ error: 'Token no proporcionado' });
+    }
+    
+    const userId = token.replace('mock_token_', '');
+    const user = mockUsers.find(u => u.id === parseInt(userId));
+    
+    if (!user) {
+        return res.status(401).json({ error: 'Usuario no encontrado' });
+    }
+    
+    res.json({
+        user: {
+            id: user.id,
+            nombre: user.nombre,
+            email: user.email,
+            nivel: user.nivel
+        }
+    });
+});
+
+// Ver producto por código
 app.get("/api/products/:codigo", (req, res) => {
     const product = mockProducts.find(p => p.codigo === req.params.codigo);
     if (!product) {
@@ -78,7 +208,6 @@ app.get("/api/products/:codigo", (req, res) => {
     }
     res.json({ product });
 });
-
 // Mock de autenticación
 app.post("/api/auth/login", (req, res) => {
     const { email, password } = req.body;
