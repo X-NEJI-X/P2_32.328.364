@@ -108,7 +108,7 @@ function getAuthHeaders() {
     const token = localStorage.getItem(TOKEN_KEY);
     return {
         'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
+        ...(token && { 'Authorization': token }),
     };
 }
 
@@ -174,7 +174,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            const nivel = document.getElementById('nivel').value;
+            const nivelEl = document.getElementById('nivel');
+            const nivel = nivelEl ? nivelEl.value : 'usuario';
             const btnText = document.getElementById('registerBtnText');
             const spinner = document.getElementById('registerSpinner');
             const alert = document.getElementById('alert');
